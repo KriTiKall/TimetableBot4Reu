@@ -4,14 +4,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TimerForParse {
-    static void timer() {
+    static void timer(Runnable task) {
         int minutes = 10;
         Timer timer = new Timer();
 
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                //хуй хуй хуй хуй хуй хуй хуй хуй хуй
+                task.run();
             }
         }, 0, 1000 * 60 * minutes);
     }
