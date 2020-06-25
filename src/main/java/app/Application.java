@@ -7,22 +7,33 @@ import view.telegram.bot.TelegramBotView;
 import view.vk.bot.VkBotView;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.function.Consumer;
 
 public class Application {
 
-    private BotView[] view = {
-            new DiscordBotView(),
-            new TelegramBotView(),
+    private static BotView[] view = {
+//            new DiscordBotView(),
+//            new TelegramBotView(),
             VkBotView.getInstance()
     };
 
     private Manager manager;
 
-    public Application() throws NoSuchAlgorithmException {
-        manager = new Manager();
+    public Application(Consumer<String[][]> consumer) throws NoSuchAlgorithmException {
+        manager = new Manager(consumer);
     }
 
     public static void main(String[] args) {
-        //kk
+        try {
+            Application app = new Application(Application::start);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void start(String[][] schedule) {
+        Arrays.stream(view)
+                .forEach((s) -> s.sendTimetableForSubs(schedule));
     }
 }

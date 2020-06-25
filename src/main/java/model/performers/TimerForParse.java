@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TimerForParse {
-    static void timer(Runnable task) {
+    public void timer(Runnable task) {
         int minutes = 10;
         Timer timer = new Timer();
 

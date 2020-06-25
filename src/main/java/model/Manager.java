@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Manager {
@@ -22,26 +23,33 @@ public class Manager {
 
     private String[][] schedule;
     private String hashSum;
-    private boolean isNew = false;
+    private Consumer<String[][]> consumer;
 
-    public Manager() throws NoSuchAlgorithmException {
+    public Manager(Consumer<String[][]> consumer) throws NoSuchAlgorithmException {
         this.repository = new Repository(new ParserPK_21(), new Mapper4Array(), new ProcessingTimetable());
         md = MessageDigest.getInstance("MD5");
+        this.consumer = consumer;
     }
 
     public String[][] getSchedule() {
         return schedule;
     }
 
-    private void compare() {
+    public void start() {
+        timer.timer(() -> {
+            if (compare())
+                consumer.accept(schedule);
+        });
+    }
+
+    private boolean compare() {
         String[][] newSchedule;
         String newHashSum;
 
         if (schedule == null) {
             schedule = repository.getSchedulePK_21();
             hashSum = getHashSum(schedule);
-            isNew = true;
-            return;
+            return true;
         }
 
         newSchedule = repository.getSchedulePK_21();
@@ -50,7 +58,9 @@ public class Manager {
         if (!newHashSum.equals(hashSum)) {
             hashSum = newHashSum;
             schedule = newSchedule;
+            return true;
         }
+        return false;
     }
 
     private String getHashSum(String[][] schedule) {
