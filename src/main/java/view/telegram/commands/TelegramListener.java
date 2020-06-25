@@ -51,12 +51,12 @@ public class TelegramListener  extends TelegramLongPollingBot implements BotView
                 if (i == 0 && j == 0) {
                     continue;
                 }
-                stringBuilder
-                        .append(timetable[i][j])
-                        .append("\n").toString();
+                stringBuilder.append(timetable[i][j])
+                        .append("\n")
+                        .toString();
             }
-            stringBuilder
-                    .append("\n").toString();
+            stringBuilder.append("\n")
+                    .toString();
         }
         sendMessage(msg, stringBuilder.toString());
     }

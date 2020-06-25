@@ -9,10 +9,9 @@ import view.vk.refac.RefacVk;
 public class VkBotView implements BotView {
 
     private static Group group;
+    private static int chatId;
 
-    private static int chatid;
-
-    private String[][] timetable = MockObject.mock_1;
+    private String[][] timetable;
 
     private static VkBotView view;
 
@@ -28,9 +27,9 @@ public class VkBotView implements BotView {
     }
 
     private static void onTextMessage(Message message) {
-        String[] text = message.getText().split(" ");
+        String[] text = message.getText().split("\\s+");
 
-        chatid = message.authorId();
+        chatId = message.authorId();
 
         if (text[0].equalsIgnoreCase("/getLesson")) {
             view.sendTimetableForSubs(view.timetable);
@@ -40,7 +39,7 @@ public class VkBotView implements BotView {
     @Override
     public void sendTimetableForSubs(String[][] timetable) {
         new Message().from(group)
-                .to(chatid)
+                .to(chatId)
                 .text(timetableToString(timetable))
                 .send();
     }

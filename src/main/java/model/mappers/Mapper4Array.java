@@ -3,7 +3,7 @@ package model.mappers;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class Mapper4Array extends Mapper<ArrayList<ArrayList<String>>,  String[][]> {
+public class Mapper4Array extends Mapper<List<List<String>>,  String[][]> {
 
     private String getTomorrow() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d.MM.yy");
@@ -15,11 +15,12 @@ public class Mapper4Array extends Mapper<ArrayList<ArrayList<String>>,  String[]
         else if (Calendar.DAY_OF_WEEK == 6)
             calendar.add(Calendar.DATE, +1);
         calendar.getTime();
+
         return (dateFormat.format(calendar.getTime())).toString();
     }
 
     @Override
-    protected String[][] mapImp(ArrayList<ArrayList<String>> item) {
+    protected String[][] mapImp(List<List<String>> item) {
 
         int index = 0;
         String tom = getTomorrow();
