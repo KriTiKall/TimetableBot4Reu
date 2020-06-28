@@ -3,7 +3,6 @@ package app;
 import model.Manager;
 import view.BotView;
 import view.discord.bot.DiscordBotView;
-import view.telegram.bot.TelegramBotView;
 import view.vk.bot.VkBotView;
 
 import java.security.NoSuchAlgorithmException;
@@ -13,7 +12,7 @@ import java.util.function.Consumer;
 public class Application {
 
     private static BotView[] view = {
-//            new DiscordBotView(),
+            new DiscordBotView(),
 //            new TelegramBotView(),
             VkBotView.getInstance()
     };
@@ -22,6 +21,7 @@ public class Application {
 
     public Application(Consumer<String[][]> consumer) throws NoSuchAlgorithmException {
         manager = new Manager(consumer);
+        manager.start();
     }
 
     public static void main(String[] args) {

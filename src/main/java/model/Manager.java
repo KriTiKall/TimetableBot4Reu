@@ -1,33 +1,21 @@
 package model;
 
-import data.ParserPK_21;
-import model.mappers.Mapper4Array;
-import model.performers.ProcessingTimetable;
-import model.performers.TimerForParse;
-import model.repository.Repository;
+import data.repository.RepositoryPK_21;
 
-import javax.xml.bind.DatatypeConverter;
-import java.nio.charset.Charset;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class Manager {
 
-    private Repository repository;
+    private RepositoryPK_21 repository;
     private TimerForParse timer = new TimerForParse();
-
-    private MessageDigest md;
+    private ScheduleHash adder = new ScheduleHash();
 
     private String[][] schedule;
     private String hashSum;
     private Consumer<String[][]> consumer;
 
-    public Manager(Consumer<String[][]> consumer) throws NoSuchAlgorithmException {
-        this.repository = new Repository(new ParserPK_21(), new Mapper4Array(), new ProcessingTimetable());
-        md = MessageDigest.getInstance("MD5");
+    public Manager(Consumer<String[][]> consumer) {
+        this.repository = new RepositoryPK_21();
         this.consumer = consumer;
     }
 
@@ -47,13 +35,13 @@ public class Manager {
         String newHashSum;
 
         if (schedule == null) {
-            schedule = repository.getSchedulePK_21();
-            hashSum = getHashSum(schedule);
+            schedule = repository.getSchedule();
+            hashSum = adder.getHashSum(schedule);
             return true;
         }
 
-        newSchedule = repository.getSchedulePK_21();
-        newHashSum = getHashSum(newSchedule);
+        newSchedule = repository.getSchedule();
+        newHashSum = adder.getHashSum(newSchedule);
 
         if (!newHashSum.equals(hashSum)) {
             hashSum = newHashSum;
@@ -61,21 +49,5 @@ public class Manager {
             return true;
         }
         return false;
-    }
-
-    private String getHashSum(String[][] schedule) {
-        byte[] digest;
-
-        md.update(convertToOneLine(schedule).getBytes(Charset.defaultCharset()));
-        digest = md.digest();
-        return DatatypeConverter
-                .printHexBinary(digest)
-                .toUpperCase();
-    }
-
-    private String convertToOneLine(String[][] schedule) {
-        return Arrays.stream(schedule)
-                .flatMap(Arrays::stream)
-                .collect(Collectors.joining());
     }
 }
